@@ -3,13 +3,13 @@ __author__ = 'akira'
 import unittest
 from package import plausi
 
-arguments_ok = ["akisim", "dereos"]
-arguments_too_few = ["akisim"]
-arguments_too_many = ["akisim", "dereos", "another"]
+arguments_ok = ["package.py", "akisim", "dereos"]
+arguments_too_few = ["package.py", "akisim"]
+arguments_too_many = ["package.py", "akisim", "dereos", "another"]
 arguments_empty = []
-arguments_wrong_distro = ["vanilla", "dereos"]
-arguments_ok_upper = ["Akisim", "Dereos"]
-arguments_nok_grid = ["Akisim", "Avination"]
+arguments_wrong_distro = ["package.py","vanilla", "dereos"]
+arguments_ok_upper = ["package.py", "Akisim", "Dereos"]
+arguments_nok_grid = ["package.py", "Akisim", "Avination"]
 
 
 class PlausiTestCase(unittest.TestCase):

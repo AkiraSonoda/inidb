@@ -1,6 +1,7 @@
 __author__ = 'Akira Sonoda'
 
 import unittest
+import re
 
 from Configuration import Configuration
 from package import getOs
@@ -11,32 +12,54 @@ class ConfigTestCase(unittest.TestCase):
         self.config = Configuration('../tests/resources/package.ini')
 
     def test_load_config(self):
-        distros_akisim_name = self.config.getItem('Distros','akisim_name')
+        distros_akisim_name = self.config.getItem('Distros','akisim')
         self.assertEqual(distros_akisim_name, 'Aki')
 
     def test_assemble_version(self):
         version_name = self.config.assembleVersionTag("akisim")
-        self.assertEqual(version_name, 'Aki-15.0.0')
+        match = re.search('(.*)-\d*\.\d*\.\d*', version_name)
+        if match:
+            distro_name = match.group(1)
+        self.assertEqual(distro_name, 'Aki')
 
-    def test_set_major_number(self):
-        self.config.setMajorVersion("Aki","16")
+    def test_increase_major_number(self):
         version_name = self.config.assembleVersionTag("akisim")
-        self.assertEqual(version_name, 'Aki-16.0.0')
+        match = re.search('.*-(\d*)\.(\d*)\.(\d*)', version_name)
+        if match:
+            old_version_number = match.group(1)
 
-    def test_set_minor_number(self):
-        self.config.setMinorVersion("Aki","1")
+        self.config.increaseNumber("akisim","major")
         version_name = self.config.assembleVersionTag("akisim")
-        self.assertEqual(version_name, 'Aki-15.1.0')
+        match = re.search(".*-(\d*)\.(\d*)\.(\d*)", version_name)
+        if match:
+            new_version_number = match.group(1)
+        self.assertEqual(int(new_version_number), int(old_version_number)+1)
 
-    def test_set_patch_number(self):
-        self.config.setPatchVersion("Aki","1")
+    def test_increase_minor_number(self):
         version_name = self.config.assembleVersionTag("akisim")
-        self.assertEqual(version_name, 'Aki-15.0.1')
+        match = re.search('.*-(\d*)\.(\d*)\.(\d*)', version_name)
+        if match:
+            old_version_number = match.group(2)
 
-    def test_set_minor_patch_number(self):
-        self.config.setPatchVersion("Aki","1.7")
+        self.config.increaseNumber("akisim","minor")
         version_name = self.config.assembleVersionTag("akisim")
-        self.assertEqual(version_name, 'Aki-15.0.1.7')
+        match = re.search(".*-(\d*)\.(\d*)\.(\d*)", version_name)
+        if match:
+            new_version_number = match.group(2)
+        self.assertEqual(int(new_version_number), int(old_version_number)+1)
+
+    def test_increase_patch_number(self):
+        version_name = self.config.assembleVersionTag("akisim")
+        match = re.search('.*-(\d*)\.(\d*)\.(\d*)', version_name)
+        if match:
+            old_version_number = match.group(3)
+
+        self.config.increaseNumber("akisim","patch")
+        version_name = self.config.assembleVersionTag("akisim")
+        match = re.search(".*-(\d*)\.(\d*)\.(\d*)", version_name)
+        if match:
+            new_version_number = match.group(3)
+        self.assertEqual(int(new_version_number), int(old_version_number)+1)
 
     def test_getOs(self):
         result = getOs()

@@ -13,29 +13,17 @@ class Configuration:
     def getItem(self, section, item):
         return self.config[section][item]
 
-
-    def setMajorVersion(self, distro, major_version_num):
-        # TODO rename to increase .. major version should be numeric and therefore be possible to increase by 1
-        self.config.set(distro, "major", major_version_num )
-
-    def setMinorVersion(self, distro, minor_version_num):
-        # TODO rename to increase .. minor version should be numeric and therefore be possible to increase by 1
-        self.config.set(distro, "minor", minor_version_num )
-
-    def setPatchVersion(self, distro, patch_version_num):
-        # TODO rename to increase .. patch version should be numeric and therefore be possible to increase by 1
-        self.config.set(distro, "patch", patch_version_num )
-
+    def increaseNumber(self, distro, level):
+        version_name = self.config['Distros'][distro]
+        version_string = self.config[version_name][level]
+        version_number = int(version_string) + 1
+        self.config.set(version_name,level,str(version_number))
+        with open(self.config_filepath,'w') as configfile:
+            self.config.write(configfile)
 
     def assembleVersionTag(self, distro):
-        version_name = ""
 
-        if distro == "akisim":
-            version_name = self.config['Distros']['akisim_name']
-        elif distro == "freaki":
-            version_name = self.config['Distros']['freaki_name']
-        elif distro == "arriba":
-            version_name = self.config['Distros']['arriba_name']
+        version_name = self.config['Distros'][distro]
 
         return (version_name + '-'
                              + self.config[version_name]['major']

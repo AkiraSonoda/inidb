@@ -2,13 +2,12 @@
 
 __author__ = 'Akira Sonoda'
 
-import sys
-import os
+import sys, os
 import Configuration
 import shutil
 
 distros = ["akisim","freaki","arriba"]
-grids = ["dereos","metropolis","osgrid"]
+versions = ["major","minor","patch"]
 
 def main(argv):
 
@@ -16,18 +15,23 @@ def main(argv):
         SystemExit(1)
 
     distro = argv[1].lower()
-    grid = argv[2].lower()
+    version = argv[2].lower()
 
     configuration = Configuration("./resources/package.ini")
     operatingSystem = getOs()
     # increase Version Number
-
+    name_package = configuration.getItem('Distros',distro)
+    configuration.increaseNumber(name_package, version)
 
     # Create target directory
-    createTargetDirectory(configuration.getItem(operatingSystem,'src_root'))
+    target_directory_path = configuration.getItem(operatingSystem,'src_root') + '/target/' + configuration.assembleVersionTag(name_package)
+    createTargetDirectory(target_directory_path)
+
+    # get the source path of the given distro.
+    source_directory_path = configuration.getItem(operatingSystem,distro)
 
     # Copy all Files into the target directory
-    copyAllFiles(distro)
+    copyAllFiles(source_directory_path, target_directory_path)
 
     # remove the git files
 
@@ -46,7 +50,7 @@ def createTargetDirectory(directoryPath):
     os.mkdir(directoryPath)
 
 
-def copyAllFiles(distro):
+def copyAllFiles(source_path, destination_path):
     pass
 
 def getOs():
@@ -62,13 +66,13 @@ def plausi(argv):
         return False
 
     distro = argv[1]
-    grid = argv[2]
+    version = argv[2]
 
     if distro.lower() not in distros:
         usage()
         return False
 
-    if grid.lower() not in grids:
+    if version.lower() not in versions:
         usage()
         return False
 
@@ -77,7 +81,7 @@ def plausi(argv):
 def usage():
     print("package.py [distribution] [grid]")
     print('           [distribution] is one of "akisim", "freaki", "arriba" ')
-    print('           [grids] is one of "dereos", "metropolis", "osgrid" ')
+    print('           [version] is one of "majnor", "minor", "patch" ')
 
 
 if __name__ == "__main__":

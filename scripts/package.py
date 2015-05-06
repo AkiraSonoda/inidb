@@ -25,7 +25,6 @@ def main(argv):
 
     # Create target directory
     target_directory_path = configuration.getItem(operatingSystem,'src_root') + '/target/' + configuration.assembleVersionTag(name_package)
-    createTargetDirectory(target_directory_path)
 
     # get the source path of the given distro.
     source_directory_path = configuration.getItem(operatingSystem,distro)
@@ -45,17 +44,6 @@ def main(argv):
 
 
     SystemExit(0)
-
-def createTargetDirectory(directoryPath):
-    os.mkdir(directoryPath)
-
-
-def copyAllFiles(source_path, destination_path):
-    pass
-
-def getOs():
-    result = os.uname()
-    return(result[0])
 
 
 def plausi(argv):
